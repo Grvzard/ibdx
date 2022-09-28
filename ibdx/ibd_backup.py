@@ -8,7 +8,7 @@ from .configs import DB_CONFIG
 def ibd_backup(
     data_path: str,
     db_name: str,
-    tar_tables: str
+    tar_tables: str = '',
 ) -> None:
     db_path = Path(data_path) / db_name
     if not db_path.is_dir():
