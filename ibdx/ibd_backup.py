@@ -22,9 +22,9 @@ def ibd_backup(
     for table in db.get_tables():
         if table.startswith(tar_tables):
             print(table)
-            db.query(f"flush tables {table} for export;")
+            db.query(f"flush tables `{table}` for export;")
 
-            _sql_create = db.query(f'show create table {table};').fetchall()[0][1]
+            _sql_create = db.query(f'show create table `{table}`;').fetchall()[0][1]
             zip_file.writestr(f'{table}.sql', _sql_create)
             zip_file.write(db_path / f'{table}.ibd', f'{table}.ibd')
             zip_file.write(db_path / f'{table}.cfg', f'{table}.cfg')

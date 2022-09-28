@@ -31,8 +31,8 @@ def ibd_restore(
             with suppress(Exception):
                 _sql_create = zip_file.read(f'{table}.sql')
                 db.query(_sql_create)
-            db.query(f'alter table {table} discard tablespace')
+            db.query(f'alter table `{table}` discard tablespace')
             zip_file.extract(f'{table}.ibd', db_path)
             with suppress(Exception):
                 zip_file.extract(f'{table}.cfg', db_path)
-            db.query(f'alter table {table} import tablespace')
+            db.query(f'alter table `{table}` import tablespace')
