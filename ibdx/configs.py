@@ -1,6 +1,12 @@
+from dotenv import dotenv_values
+
+
+config = dotenv_values(".env")
+
+
 DB_CONFIG = {
-    "host": "localhost",
-    "port": 3306,
-    "user": "root",
-    "password": ""
+    'host': config['host'],
+    'port': int(config['port']),
+    'user': config['user'],
+    'password': config['password'],
 }
