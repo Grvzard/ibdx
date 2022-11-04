@@ -21,7 +21,7 @@ def backup(data_path: str, db_name: str, tar_tables: str):
 def restore(
     data_path: str,
     db_name: str,
-    tar_tables: str = '',
+    tar_tables: str = typer.Argument(''),
     need_tables: str = typer.Option('')
 ):
     try:
