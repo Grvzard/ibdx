@@ -20,10 +20,9 @@ def ibd_restore(
     zipfile_name = f'{db_name}_{tar_tables}.zip'
     zip_file = zipfile.ZipFile(zipfile_name, 'r', zipfile.ZIP_DEFLATED)
 
-    file_list = [file for file in zip_file.namelist() if file.endswith('.ibd')]
-    for file in file_list:
-        table = file.split('.')[0]
-        if table.startswith(need_tables or tar_tables):
+    for file in zip_file.namelist():
+        if file.endswith('.ibd') and file.startswith(need_tables or tar_tables):
+            table = file.split('.')[0]
             print(table)
             with suppress(Exception):
                 _sql_create = zip_file.read(f'{table}.sql')
