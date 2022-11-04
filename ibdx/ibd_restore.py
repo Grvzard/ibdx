@@ -24,11 +24,22 @@ def ibd_restore(
         if file.endswith('.ibd') and file.startswith(need_tables or tar_tables):
             table = file.split('.')[0]
             print(table)
+
             with suppress(Exception):
                 _sql_create = zip_file.read(f'{table}.sql')
                 db.query(_sql_create)
-            db.query(f'alter table `{table}` discard tablespace')
-            zip_file.extract(f'{table}.ibd', db_path)
-            with suppress(Exception):
-                zip_file.extract(f'{table}.cfg', db_path)
-            db.query(f'alter table `{table}` import tablespace')
+
+            try:
+                db.query(f'alter table `{table}` discard tablespace')
+
+                zip_file.extract(f'{table}.ibd', db_path)
+                with suppress(Exception):
+                    zip_file.extract(f'{table}.cfg', db_path)
+
+                db.query(f'alter table `{table}` import tablespace')
+            except Exception as e:
+                (db_path / f'{table}.ibd').unlink()
+                (db_path / f'{table}.cfg').unlink(missing_ok=True)
+                db.query(f'drop table if exists `{table}`;')
+
+                raise Exception('failed when importing tablespace:\n' + str(e))
