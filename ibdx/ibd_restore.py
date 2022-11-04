@@ -7,18 +7,15 @@ from .configs import DB_CONFIG
 
 
 def ibd_restore(
-    data_path: str,
     db_name: str,
     tar_tables: str = '',
     need_tables: str = ''
 ) -> None:
-    db_path = Path(data_path) / db_name
-    if not db_path.is_dir():
-        raise Exception('db_path is not dir')
-    if not need_tables:
-        need_tables = tar_tables
-
     db = MysqlConn(db_name, DB_CONFIG)
+
+    datadir = db.query('show variables like \'datadir\';').fetchone()[1]
+    db_path = Path(datadir) / db_name
+    assert db_path.is_dir()
 
     zipfile_name = f'{db_name}_{tar_tables}.zip'
     zip_file = zipfile.ZipFile(zipfile_name, 'r', zipfile.ZIP_DEFLATED)
@@ -26,7 +23,7 @@ def ibd_restore(
     file_list = [file for file in zip_file.namelist() if file.endswith('.ibd')]
     for file in file_list:
         table = file.split('.')[0]
-        if table.startswith(need_tables):
+        if table.startswith(need_tables or tar_tables):
             print(table)
             with suppress(Exception):
                 _sql_create = zip_file.read(f'{table}.sql')
