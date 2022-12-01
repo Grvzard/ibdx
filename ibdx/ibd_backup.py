@@ -6,14 +6,15 @@ from .configs import DB_CONFIG
 
 
 def ibd_backup(
+    data_path: str,
     db_name: str,
     tar_tables: str = '',
 ) -> None:
-    db = MysqlConn(db_name, DB_CONFIG)
+    db_path = Path(data_path) / db_name
+    if not db_path.is_dir():
+        raise Exception('db_path is not dir!')
 
-    datadir = db.query('show variables like \'datadir\';').fetchone()[1]
-    db_path = Path(datadir) / db_name
-    assert db_path.is_dir()
+    db = MysqlConn(db_name, DB_CONFIG)
 
     zipfile_name = f'{db_name}_{tar_tables}.zip'
     zip_file = zipfile.ZipFile(zipfile_name, 'w', zipfile.ZIP_DEFLATED)

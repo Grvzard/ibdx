@@ -10,21 +10,22 @@ cli = typer.Typer()
 
 
 @cli.command()
-def backup(db_name: str, tar_tables: str):
+def backup(data_path: str, db_name: str, tar_tables: str):
     try:
-        ibd_backup(db_name, tar_tables)
+        ibd_backup(data_path, db_name, tar_tables)
     except Exception as e:
         typer.echo(e)
 
 
 @cli.command()
 def restore(
+    data_path: str,
     db_name: str,
     tar_tables: str = typer.Argument(''),
     need_tables: str = typer.Option('')
 ):
     try:
-        ibd_restore(db_name, tar_tables, need_tables)
+        ibd_restore(data_path, db_name, tar_tables, need_tables)
     except Exception as e:
         typer.echo(e)
 
