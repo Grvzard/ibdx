@@ -1,38 +1,54 @@
+from typing import Optional
 
 import typer
 
 from .ibd_backup import ibd_backup
 from .ibd_restore import ibd_restore
 from .tools import zipfile_ls
+from .deps import complete_filename
 
 
 cli = typer.Typer()
 
 
 @cli.command()
-def backup(db_name: str, tar_tables: str):
+def backup(
+    dbname: str = typer.Option(
+        ..., '--db', '-d'),
+    target_tables: Optional[str] = typer.Option(
+        '*', '--tables', '-t'),
+    datadir: Optional[str] = typer.Option(''),
+    filename: Optional[str] = typer.Option(
+        '', '--file', '-f', autocompletion=complete_filename),
+):
     try:
-        ibd_backup(db_name, tar_tables)
+        ibd_backup(dbname, target_tables, datadir, filename)
     except Exception as e:
-        typer.echo(e)
+        typer.echo(f'ibdx error: {e}')
 
 
 @cli.command()
 def restore(
-    db_name: str,
-    tar_tables: str = typer.Argument(''),
-    need_tables: str = typer.Option('')
+    dbname: str = typer.Option(
+        ..., '--db', '-d'),
+    target_tables: Optional[str] = typer.Option(
+        '*', '--tables', '-t'),
+    filename: str = typer.Option(
+        ..., '--file', '-f', autocompletion=complete_filename),
+    datadir: Optional[str] = typer.Option(''),
 ):
     try:
-        ibd_restore(db_name, tar_tables, need_tables)
+        ibd_restore(dbname, target_tables, filename, datadir)
     except Exception as e:
-        typer.echo(e)
+        typer.echo(f'ibdx error: {e}')
 
 
 @cli.command()
-def ls(zipfile_name: str):
+def ls(
+    zipfile_name: str = typer.Argument('', autocompletion=complete_filename)
+):
     try:
         for name in zipfile_ls(zipfile_name):
             typer.echo(name)
     except Exception as e:
-        typer.echo(e)
+        typer.echo(f'ibdx error: {e}')

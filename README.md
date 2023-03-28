@@ -23,17 +23,14 @@ vim .env
 
 main version:
 ```
-python3 -m ibdx backup test1 tbl_users
-python3 -m ibdx restore test1 tbl_users
+python3 -m ibdx backup --db test1 --tables tbl_users_*
+python3 -m ibdx restore -f test1.tbl_users.zip --db test1 --tables tbl_users*
 ```
+if the mysql server is running in docker, the _--datadir_ option is needed.
 
-docker version:
-```
-python3 -m ibdx backup /mysql-1/data test1 tbl_users
-python3 -m ibdx restore /mysql-2/data test1 tbl_users
-```
+more tips can be found by: ```python3 -m ibdx --help```
 
-**Important!!**
+**Importantly:**
 There is no guarantee that it will work between mysql and mariadb.
 Ensure that the backup and restore sides are the same db system.
 

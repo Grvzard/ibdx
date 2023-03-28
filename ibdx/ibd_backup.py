@@ -1,25 +1,37 @@
 import zipfile
 from pathlib import Path
+from typing import Optional
 
+from . import __version__
 from .mysql_db_quick import MysqlConn
 from .configs import DB_CONFIG
+from .tools import wild_matching
 
 
 def ibd_backup(
-    db_name: str,
-    tar_tables: str = '',
+    dbname: str,
+    target_tables: str,
+    datadir: Optional[str],
+    filename: Optional[str],
 ) -> None:
-    db = MysqlConn(db_name, DB_CONFIG)
+    db = MysqlConn(dbname, DB_CONFIG)
 
-    datadir = db.query('show variables like \'datadir\';').fetchone()[1]
-    db_path = Path(datadir) / db_name
+    if not datadir:
+        datadir = db.query('show variables like \'datadir\';').fetchone()[1]
+    db_path = Path(datadir) / dbname
     assert db_path.is_dir()
 
-    zipfile_name = f'{db_name}_{tar_tables}.zip'
-    zip_file = zipfile.ZipFile(zipfile_name, 'w', zipfile.ZIP_DEFLATED)
+    if not filename:
+        filename = dbname + '.' + target_tables.split('*')[0] + '.zip'
 
-    for table in db.get_tables():
-        if table.startswith(tar_tables):
+    if not Path(filename).exists():
+        with zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(f'.ibdx.v{__version__}', f'{__version__}')
+
+    tables = wild_matching(target_tables, db.get_tables())
+
+    with zipfile.ZipFile(filename, 'a', zipfile.ZIP_DEFLATED) as zip_file:
+        for table in tables:
             print(table)
             db.query(f"flush tables `{table}` for export;")
 
