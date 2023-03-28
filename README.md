@@ -23,8 +23,8 @@ vim .env
 
 main version:
 ```
-python3 -m ibdx backup --db test1 --tables tbl_users_*
-python3 -m ibdx restore -f test1.tbl_users.zip --db test1 --tables tbl_users*
+python3 -m ibdx backup --db test1 --tables tbl_users* [--datadir /mysql-data]
+python3 -m ibdx restore -f test1.tbl_users.zip --db test1 --tables tbl_users* [--datadir /mysql-data]
 ```
 if the mysql server is running in docker, the _--datadir_ option is needed.
 
