@@ -1,4 +1,5 @@
 import zipfile
+from typing import List
 
 
 def zipfile_ls(zipfile_name: str):
@@ -10,8 +11,8 @@ def zipfile_ls(zipfile_name: str):
     return zip_file.namelist()
 
 
-def wild_matching(str_: str, list_: list[str]) -> list:
-    tables: list[str]
+def wild_matching(str_: str, list_: List[str]) -> List:
+    tables = []
     tables_wild_matching = str_.split('*')
     if len(tables_wild_matching) > 1:
         # multiple tables
