@@ -16,7 +16,7 @@ def wild_matching(str_: str, list_: List[str]) -> List:
     tables_wild_matching = str_.split('*')
     if len(tables_wild_matching) > 1:
         # multiple tables
-        tables = list(map(lambda x: x.startswith(tables_wild_matching[0]) and x, list_))
+        tables = [t for t in list_ if t.startswith(tables_wild_matching[0])]
     else:
         # just one table
         if str_ in list_:
