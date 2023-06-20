@@ -3,36 +3,53 @@
 
 ## Use case
 
-- another way to backup/restore InnoDB tables besides mysqldump
+- backup/restore mysql InnoDB tables in an easy way
 
 
 ## Setup
 
+#### From pypi
 ```
-git clone https://github.com/Grvzard/ibdx.git [-b docker]
+pip install ibdx
+```
+
+#### From source
+```
+git clone https://github.com/Grvzard/ibdx.git
 cd ibdx
+pip install .
+```
 
-pip3 install -r requirements.txt
-
+#### Edit config
+```
 cp demo.env .env
 vim .env
 ```
+the .env works only when the ```ibdx``` command is running in that directory
 
 
 ## Usage
 
-main version:
-```
-python3 -m ibdx backup --db test1 --tables tbl_users* [--datadir /mysql-data]
-python3 -m ibdx restore -f test1.tbl_users.zip --db test1 --tables tbl_users* [--datadir /mysql-data]
-```
-if the mysql server is running in docker, the _--datadir_ option is needed.
+```ibdx --help```
 
-more tips can be found by: ```python3 -m ibdx --help```
+**Take care:**
+There seems to be an incompatibility between mysql and mariadb.
+Make sure that ibdx works between the same db system.
 
-**Importantly:**
-There is no guarantee that it will work between mysql and mariadb.
-Ensure that the backup and restore sides are the same db system.
+
+## Example
+
+Let's say we have following tables:
+```[ logs_2023_01, logs_2023_02, logs_2023_03, logs_2023_04 ]```
+
+```
+ibdx backup --db test1 --tables logs_2023_* -f logs.2023.zip [--datadir /mysql/datadir]
+```
+```
+ibdx restore -f logs.2023.zip --db test1 --tables logs_2023_* [--datadir /mysql/datadir]
+```
+
+When the mysql server is running in Docker, the _--datadir_ option is required.
 
 
 ## Script Workflow
