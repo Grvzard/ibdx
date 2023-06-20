@@ -1,10 +1,7 @@
-
 from pymysql import connect
 
 
 class MysqlConn:
-    config = {}
-
     def __init__(self, db, config):
         self.config = config
         self.conn = connect(**self.config, database=db)
