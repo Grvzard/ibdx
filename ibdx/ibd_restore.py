@@ -41,8 +41,9 @@ def ibd_restore(
             table = sql_file.rsplit('.')[0]
             print(f"executing sql: {table}")
 
-            sql_create = zip_file.read(sql_file)
-            db.query(sql_create)
+            with suppress(Exception):
+                sql_create = zip_file.read(sql_file)
+                db.query(sql_create)
 
         for ibd_file in target_ibd_files:
             table = ibd_file.rsplit('.')[0]
@@ -50,12 +51,17 @@ def ibd_restore(
 
             try:
                 db.query(f'alter table `{table}` discard tablespace')
+                print(f'. alter table `{table}` discard tablespace')
 
                 zip_file.extract(f'{table}.ibd', db_path)
+                (db_path / f'{table}.ibd').chmod(0o666)
+                print(f'.. extract {table}.ibd')
                 with suppress(Exception):
                     zip_file.extract(f'{table}.cfg', db_path)
+                    print(f'.. extract {table}.cfg')
 
                 db.query(f'alter table `{table}` import tablespace')
+                print(f'... alter table `{table}` import tablespace')
 
             except Exception as e:
                 (db_path / f'{table}.ibd').unlink(missing_ok=True)
