@@ -20,6 +20,8 @@ def ibd_backup(
         if res is None:
             raise Exception('cannot get datadir')
         datadir = res[1]
+        if not Path(datadir).exists():
+            raise Exception('datadir does not exists')
 
     db_dpath = Path(datadir) / dbname
     assert db_dpath.is_dir()
