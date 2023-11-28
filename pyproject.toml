@@ -23,10 +23,6 @@ homepage = "https://github.com/Grvzard/ibdx"
 [tool.hatch.version]
 path = "ibdx/__init__.py"
 
-[tool.black]
-line-length = 120
-skip-string-normalization = true
-
 [tool.ruff]
 line-length = 120
 select = [
@@ -34,3 +30,6 @@ select = [
     "F",
     "W",
 ]
+
+[tool.ruff.format]
+quote-style = "single"
