@@ -2,6 +2,7 @@ import zipfile
 import typer
 import logging
 
+from ibdx import __version__
 from ibdx.ibd_backup import ibd_backup
 from ibdx.ibd_restore import ibd_restore
 from ibdx.deps import complete_filename
@@ -12,6 +13,11 @@ cli = typer.Typer()
 
 cli.command('backup')(ibd_backup)
 cli.command('restore')(ibd_restore)
+
+
+@cli.command()
+def version():
+    print(f'ibdx {__version__}')
 
 
 @cli.command()

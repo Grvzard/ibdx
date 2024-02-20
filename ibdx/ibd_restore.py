@@ -22,8 +22,13 @@ def ibd_restore(
     datadir: str = typer.Option(''),
 ) -> None:
     db = MysqlConn(dbname, host, port, user, password)
+    tables_pattern = tables_pattern.replace('%', '*')
+    fin_fpath = Path(fin_path)
 
-    if not zipfile.is_zipfile(fin_path):
+    if not fin_fpath.exists():
+        logger.error('--file does not exist')
+        return
+    elif not zipfile.is_zipfile(fin_fpath):
         logger.error('--file is not a valid archive file')
         return
 
@@ -37,7 +42,7 @@ def ibd_restore(
     db_path = Path(datadir) / dbname
     assert db_path.is_dir()
 
-    with zipfile.ZipFile(fin_path, 'r', zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(fin_fpath, 'r', zipfile.ZIP_DEFLATED) as zip_file:
         target_ibd_files = fnmatch.filter(
             zip_file.namelist(),
             f'{tables_pattern}.ibd',

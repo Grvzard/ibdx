@@ -22,6 +22,7 @@ def ibd_backup(
     datadir: str = typer.Option(''),
 ) -> None:
     db = MysqlConn(dbname, host, port, user, password)
+    tables_pattern = tables_pattern.replace('%', '*')
 
     if not datadir:
         res = db.query("show variables like 'datadir';").fetchone()

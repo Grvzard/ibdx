@@ -11,6 +11,8 @@
 #### From pypi
 ```
 pip install ibdx
+or
+pipx install ibdx (recommended)
 ```
 
 #### From source
@@ -19,14 +21,6 @@ git clone https://github.com/Grvzard/ibdx.git
 cd ibdx
 pip install .
 ```
-
-#### Edit config
-```
-cp demo.env .env
-vim .env
-```
-the .env works only when the ```ibdx``` command is running in that directory
-
 
 ## Usage
 
@@ -43,10 +37,10 @@ Let's say we have following tables:
 ```[ logs_2023_01, logs_2023_02, logs_2023_03, logs_2023_04 ]```
 
 ```
-ibdx backup --db test1 --tables logs_2023_* -f logs.2023.zip [--datadir /mysql/datadir]
+ibdx backup -u user -p password -h localhost --db test1 --tables logs_2023_% -f logs.2023.zip [--datadir /mysql/datadir]
 ```
 ```
-ibdx restore -f logs.2023.zip --db test1 --tables logs_2023_* [--datadir /mysql/datadir]
+ibdx restore -f logs.2023.zip -u user -p password -h localhost --db test1 --tables logs_2023_% [--datadir /mysql/datadir]
 ```
 
 When the mysql server is running in Docker, the _--datadir_ option is required.
