@@ -9,7 +9,7 @@ description = "yet another backup/restore program for mysql InnoDB tables"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "pymysql == 1.1.0",
+    "pymysql ==1.1.1",
     "typer >= 0.7.0, < 1.0.0",
 ]
 
