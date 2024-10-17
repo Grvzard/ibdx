@@ -1,3 +1,4 @@
+import time
 import zipfile
 from pathlib import Path
 from contextlib import suppress
@@ -62,7 +63,7 @@ def ibd_restore(
 
         for ibd_file in target_ibd_files:
             table = ibd_file.rsplit('.')[0]
-            logger.info(f'importing tablespace: {table}')
+            logger.info(f'importing table: {table}')
 
             try:
                 db.query(f'alter table `{table}` discard tablespace')
@@ -75,6 +76,7 @@ def ibd_restore(
                     zip_file.extract(f'{table}.cfg', db_path)
                     logger.info(f'.. extract {table}.cfg')
 
+                time.sleep(0.1)
                 db.query(f'alter table `{table}` import tablespace')
                 logger.info(f'... alter table `{table}` import tablespace')
 
